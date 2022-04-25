@@ -1,0 +1,7 @@
+bin
+obj
+*.user
+src/Adliance.Project.Server.Web/Adliance.Project.Server.Web.xml
+src/Adliance.Project.Server.Web/appsettings.Development.json
+.DS_Store
+.idea

@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <DocumentationFile>Adliance.Project.Server.Web.xml</DocumentationFile>
+        <NoWarn>1701;1702;CS1591</NoWarn>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.7.28" />
+        <PackageReference Include="Hangfire.Console" Version="1.4.2" />
+        <PackageReference Include="Hangfire.SqlServer" Version="1.7.28" />
+        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" Version="2.20.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.4" />
+        <PackageReference Include="Humanizer" Version="2.14.1" />
+        <PackageReference Include="NodaTime" Version="3.1.0" />
+        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.4" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.4">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="wwwroot" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Adliance.Project.Server.Infrastructure\Adliance.Project.Server.Infrastructure.csproj" />
+      <ProjectReference Include="..\Adliance.Project.Shared\Adliance.Project.Shared.csproj" />
+    </ItemGroup>
+
+</Project>
