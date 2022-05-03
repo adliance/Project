@@ -5,18 +5,65 @@
 @using System.Text.Json
 
 @inject ArticleService ArticleService
+@inject NavigationManager NavigationManager
 
 <PageTitle>Articles</PageTitle>
 
-<code>
-    @JsonSerializer.Serialize(articlesResponse)
-</code>
+<div class="w-100">
+    <DxDataGrid DataAsync="@GetArticlesAsync"
+                ShowGroupPanel="@true"
+                ShowFilterRow="@true"
+                ShowPager="@true"
+                HorizontalScrollBarMode="@ScrollBarMode.Auto"
+                PagerNavigationMode="@PagerNavigationMode.InputBox"
+                PagerPageSizeSelectorVisible="@true"
+                PageCount="@TotalCount"
+                PagerAllDataRowsItemVisible="@true"
+                PagerAllowedPageSizes=@(new int[] {5,10,20})>
+        <Columns>
+            <DxDataGridColumn Field="@nameof(ArticleResponse.Id)" Caption=" " FixedStyle="@DataGridFixedStyle.Left"
+                              TextAlignment="@DataGridTextAlign.Left" AllowFilter="@false" AllowGroup="@false" AllowSort="@false">
+            </DxDataGridColumn>
+            <DxDataGridColumn Field="@nameof(ArticleResponse.Name)" Caption="Name" FixedStyle="@DataGridFixedStyle.Left">
+                <DisplayTemplate>
+                    @{
+                        var article = (context as ArticleResponse);
+                    }
+                    <button class="btn btn-link grid-btn-link" @onclick="() => GotoDetailsViewClick(article)">@(article?.Name)</button>
+                </DisplayTemplate>
+            </DxDataGridColumn>
+            <DxDataGridColumn Field="@nameof(ArticleResponse.Description)">
+            </DxDataGridColumn>
+            <DxDataGridColumn Field="@nameof(ArticleResponse.LengthCm)">
+            </DxDataGridColumn>
+            <DxDataGridDateEditColumn Field="@nameof(ArticleResponse.Updated)">
+            </DxDataGridDateEditColumn>
+            <DxDataGridColumn Field="@nameof(ArticleResponse.UpdatedBy)">
+            </DxDataGridColumn>
+        </Columns>
+        <GroupSummary>
+            <DxDataGridSummaryItem Field="@nameof(ArticleResponse.Id)" SummaryType="@SummaryItemType.Count"
+                                   ShowInColumn="@nameof(ArticleResponse.Id)" DisplayFormat="Count is {0}" />
+        </GroupSummary>
+        <TotalSummary>
+            <DxDataGridSummaryItem Field="@nameof(ArticleResponse.Id)" SummaryType="@SummaryItemType.Count"
+                                   ShowInColumn="@nameof(ArticleResponse.Name)" />
+        </TotalSummary>
+    </DxDataGrid>
+</div>
 
 @code {
-    private ArticlesResponse? articlesResponse;
+    public int TotalCount { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    void GotoDetailsViewClick(ArticleResponse? article)
     {
-        articlesResponse = await ArticleService.GetAllAsync();
+        NavigationManager.NavigateTo($"article/{article.Id}");
+    }
+
+    public async Task<IEnumerable<ArticleResponse>> GetArticlesAsync(CancellationToken ct = default)
+    {
+        var articlesResponse = await ArticleService.GetAllAsync();
+        TotalCount = articlesResponse.TotalCount;
+        return articlesResponse.Articles;
     }
 }

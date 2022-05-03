@@ -1,0 +1,160 @@
+﻿@page "/article/{Id:guid}"
+@attribute [Authorize(Roles = Roles.ArticlesManager)]
+
+@using Adliance.Project.Shared.Requests
+@using Adliance.Project.Shared.Responses
+@using System.Text.Json
+
+@inject ArticleService ArticleService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Articles</PageTitle>
+
+@if (Model == null)
+{
+    <Loading />
+}
+else
+{
+    if (!IsEditMode)
+    {
+        <div class="w-100">
+            <div class="jumbotron p-4">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-2">@Model.Name</h4>
+                        <p class="mb-4">
+                            <span class="badge rounded-pill bg-info text-dark">@Model.Id</span>
+                        </p>
+                        <p class="mb-4">Updated by @Model.UpdatedBy on @GetUpdatedDate(Model)</p>
+                        <p class="mb-4">@Model.Description</p>
+                        <p class="mb-4">@Model.LengthCm</p>
+                    </div>
+                    <div class="info text-center">
+                    </div>
+                </div>
+                <DxButton Text="Edit" @onclick="@EditClick">
+                </DxButton>
+                <DxButton Text="Back to Grid" @onclick="@GotoListViewClick">
+                </DxButton>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card cw-480">
+            <EditForm Model="@Data"
+              OnValidSubmit="@HandleValidSubmit"
+              Context="EditFormContext">
+                <DataAnnotationsValidator />
+                <div class="card-header text-center py-3">
+                    <h4>Edit article</h4>
+                </div>
+                <div class="card-body">
+                    <DxFormLayout>
+                        <DxFormLayoutItem ColSpanMd="12">
+                            <Template>
+                                <DxTextBox @bind-Text="@Data.Name"
+                                   NullText="Name"
+                                   ClearButtonDisplayMode="@DataEditorClearButtonDisplayMode.Auto" />
+                                <div class="text-danger">
+                                    <ValidationMessage For="@(() => Data.Name)" />
+                                </div>
+                            </Template>
+                        </DxFormLayoutItem>
+   
+                        <DxFormLayoutItem ColSpanMd="12">
+                            <Template>
+                                <DxSpinEdit @bind-Value="@Data.LengthCm"
+                                   NullText="Length cm"
+                                   ClearButtonDisplayMode="@DataEditorClearButtonDisplayMode.Auto" />
+                                <div class="text-danger">
+                                    <ValidationMessage For="@(() => Data.LengthCm)" />
+                                </div>
+                            </Template>
+                        </DxFormLayoutItem>
+                        <DxFormLayoutItem ColSpanMd="12">
+                            <Template>
+                                <DxMemo @bind-Text="@Data.Description"
+                                NullText="Description"
+                                Rows="4"
+                                ClearButtonDisplayMode="@DataEditorClearButtonDisplayMode.Auto" />
+                                <div class="text-danger">
+                                    <ValidationMessage For="@(() => Data.LengthCm)" />
+                                </div>
+                            </Template>
+                        </DxFormLayoutItem>
+                        <DxFormLayoutItem ColSpanMd="6">
+                            <Template>
+                                <DxButton CssClass="w-100"
+                                  RenderStyle="@ButtonRenderStyle.Primary"
+                                  SubmitFormOnClick="@true"
+                                  Text="Save" />
+                            </Template>
+                        </DxFormLayoutItem>
+                        <DxFormLayoutItem ColSpanMd="6">
+                            <Template>
+                                <DxButton CssClass="w-100"
+                                  RenderStyle="@ButtonRenderStyle.Secondary"
+                                  Click="@CancelClick"
+                                  Text="Cancel" />
+                            </Template>
+                        </DxFormLayoutItem>
+                    </DxFormLayout>
+                </div>
+            </EditForm>
+        </div>
+    }
+}
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    public bool IsEditMode { get; set; }
+    public ArticleResponse? Model { get; set; }
+    public ArticleUpdateRequest Data { get; set; } = new ArticleUpdateRequest();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await ArticleService.GetAsync(Id);
+        await base.OnInitializedAsync();
+    }
+
+    void GotoListViewClick()
+    {
+        NavigationManager.NavigateTo("articles");
+    }
+
+    void CancelClick()
+    {
+        IsEditMode = false;
+    }
+
+    void EditClick()
+    {
+        if (Model == null)
+        {
+            return;
+        }
+        Data = new ArticleUpdateRequest
+            {
+                Name = Model.Name,
+                Description = Model.Description,
+                LengthCm = Model.LengthCm
+            };
+        IsEditMode = true;
+    }
+
+    string? GetUpdatedDate(ArticleResponse article)
+    {
+        return article.Updated.ToString("G");
+    }
+
+    async void HandleValidSubmit()
+    {
+        Model = await ArticleService.UpdateAsync(Id, Data);
+        IsEditMode = false;
+        StateHasChanged();
+    }
+}
