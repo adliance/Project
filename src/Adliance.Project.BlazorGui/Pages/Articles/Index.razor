@@ -4,7 +4,7 @@
 @using Adliance.Project.Shared.Responses
 @using System.Text.Json
 
-@inject IHttpClientFactory HttpFactory
+@inject ArticleService ArticleService
 
 <PageTitle>Articles</PageTitle>
 
@@ -17,7 +17,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var client = HttpFactory.CreateClient("authorizedClient");
-        articlesResponse = await client.GetFromJsonAsync<ArticlesResponse>("api/articles");
+        articlesResponse = await ArticleService.GetAllAsync();
     }
 }

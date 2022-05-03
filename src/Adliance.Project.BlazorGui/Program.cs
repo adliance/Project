@@ -22,12 +22,12 @@ builder.Services.AddHttpClient("default", client =>
     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
 });
 
-var httpClientBuilder = builder.Services.AddHttpClient("authorizedClient", client =>
+var httpClientBuilder = builder.Services.AddHttpClient<IApiClient, ApiClient>("authorizedClient", client =>
 {
     client.BaseAddress = new Uri(string.IsNullOrEmpty(apiBaseUrl) ? builder.HostEnvironment.BaseAddress : apiBaseUrl);
     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
 });
-    //.AddHttpMessageHandler<AuthorizedHandler>();
+//.AddHttpMessageHandler<AuthorizedHandler>();
 
 builder.Services.AddTransient(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("default"));
 
@@ -37,5 +37,7 @@ if (builder.HostEnvironment.IsDevelopment())
     httpClientBuilder.AddHttpMessageHandler<CookieAuthenticationMessageHandler>();
     builder.Services.AddScoped<CookieAuthenticationMessageHandler>();
 }
+
+builder.Services.AddServices();
 
 await builder.Build().RunAsync();
