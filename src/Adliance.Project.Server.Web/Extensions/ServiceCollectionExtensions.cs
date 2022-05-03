@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Security.Claims;
 using Adliance.Project.Server.Core.Interfaces;
 using Adliance.Project.Server.Core.Models;
