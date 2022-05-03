@@ -1,0 +1,23 @@
+﻿@page "/articles"
+@attribute [Authorize(Roles = Roles.ArticlesManager)]
+
+@using Adliance.Project.Shared.Responses
+@using System.Text.Json
+
+@inject IHttpClientFactory HttpFactory
+
+<PageTitle>Articles</PageTitle>
+
+<code>
+    @JsonSerializer.Serialize(articlesResponse)
+</code>
+
+@code {
+    private ArticlesResponse? articlesResponse;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var client = HttpFactory.CreateClient("authorizedClient");
+        articlesResponse = await client.GetFromJsonAsync<ArticlesResponse>("api/articles");
+    }
+}
