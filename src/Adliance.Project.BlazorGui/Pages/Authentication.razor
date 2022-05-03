@@ -1,0 +1,20 @@
+﻿@page "/authentication/{action}"
+
+@inject IHttpClientFactory ClientFactory
+
+@code{
+    [Parameter] public string? Action { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!new[] {"login", "logout" }.Contains(Action?.ToLowerInvariant()))
+        {
+            Action = "login";
+        }
+
+        var client = ClientFactory.CreateClient("authorizedClient");
+
+        var response = await client.GetAsync(Action == "login" ? "" : "logout");
+
+    }
+}
