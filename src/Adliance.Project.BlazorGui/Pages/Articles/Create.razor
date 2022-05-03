@@ -1,0 +1,91 @@
+﻿@page "/article/create"
+@attribute [Authorize(Roles = Roles.ArticlesManager)]
+
+@using Adliance.Project.Shared.Requests
+@using Adliance.Project.Shared.Responses
+@using System.Text.Json
+
+@inject ArticleService ArticleService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Articles - Create</PageTitle>
+
+<div class="card cw-480">
+    <EditForm Model="@Data"
+              OnValidSubmit="@HandleValidSubmit"
+              Context="EditFormContext">
+        <DataAnnotationsValidator />
+        <div class="card-header text-center py-3">
+            <h4>Create article</h4>
+        </div>
+        <div class="card-body">
+            <DxFormLayout>
+                <DxFormLayoutItem ColSpanMd="12">
+                    <Template>
+                        <DxTextBox @bind-Text="@Data.Name"
+                                   NullText="Name"
+                                   ClearButtonDisplayMode="@DataEditorClearButtonDisplayMode.Auto" />
+                        <div class="text-danger">
+                            <ValidationMessage For="@(() => Data.Name)" />
+                        </div>
+                    </Template>
+                </DxFormLayoutItem>
+
+                <DxFormLayoutItem ColSpanMd="12">
+                    <Template>
+                        <DxSpinEdit @bind-Value="@Data.LengthCm"
+                                    NullText="Length cm"
+                                    ClearButtonDisplayMode="@DataEditorClearButtonDisplayMode.Auto" />
+                        <div class="text-danger">
+                            <ValidationMessage For="@(() => Data.LengthCm)" />
+                        </div>
+                    </Template>
+                </DxFormLayoutItem>
+                <DxFormLayoutItem ColSpanMd="12">
+                    <Template>
+                        <DxMemo @bind-Text="@Data.Description"
+                                NullText="Description"
+                                Rows="4"
+                                ClearButtonDisplayMode="@DataEditorClearButtonDisplayMode.Auto" />
+                    </Template>
+                </DxFormLayoutItem>
+                <DxFormLayoutItem ColSpanMd="6">
+                    <Template>
+                        <DxButton CssClass="w-100"
+                                  RenderStyle="@ButtonRenderStyle.Primary"
+                                  SubmitFormOnClick="@true"
+                                  Text="Save" />
+                    </Template>
+                </DxFormLayoutItem>
+                <DxFormLayoutItem ColSpanMd="6">
+                    <Template>
+                        <DxButton CssClass="w-100"
+                                  RenderStyle="@ButtonRenderStyle.Secondary"
+                                  Click="@CancelClick"
+                                  Text="Cancel" />
+                    </Template>
+                </DxFormLayoutItem>
+            </DxFormLayout>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    public ArticleCreateRequest Data { get; set; } = new ArticleCreateRequest();
+
+    void GotoListViewClick()
+    {
+        NavigationManager.NavigateTo("articles");
+    }
+
+    void CancelClick()
+    {
+        GotoListViewClick();
+    }
+
+    async void HandleValidSubmit()
+    {
+        var model = await ArticleService.CreateAsync(Data);
+        NavigationManager.NavigateTo($"article/{model.Id}");
+    }
+}

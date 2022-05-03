@@ -10,8 +10,14 @@
 <PageTitle>Articles</PageTitle>
 
 <div class="w-100">
+    <div class="mb-4">
+        <DxButton Text="Create article" @onclick="@CreateClick">
+        </DxButton>
+    </div>
+</div>
+
+<div class="w-100">
     <DxDataGrid DataAsync="@GetArticlesAsync"
-                ShowGroupPanel="@true"
                 ShowFilterRow="@true"
                 ShowPager="@true"
                 HorizontalScrollBarMode="@ScrollBarMode.Auto"
@@ -41,10 +47,6 @@
             <DxDataGridColumn Field="@nameof(ArticleResponse.UpdatedBy)">
             </DxDataGridColumn>
         </Columns>
-        <GroupSummary>
-            <DxDataGridSummaryItem Field="@nameof(ArticleResponse.Id)" SummaryType="@SummaryItemType.Count"
-                                   ShowInColumn="@nameof(ArticleResponse.Id)" DisplayFormat="Count is {0}" />
-        </GroupSummary>
         <TotalSummary>
             <DxDataGridSummaryItem Field="@nameof(ArticleResponse.Id)" SummaryType="@SummaryItemType.Count"
                                    ShowInColumn="@nameof(ArticleResponse.Name)" />
@@ -57,7 +59,7 @@
 
     void GotoDetailsViewClick(ArticleResponse? article)
     {
-        NavigationManager.NavigateTo($"article/{article.Id}");
+        NavigationManager.NavigateTo($"article/{article?.Id}");
     }
 
     public async Task<IEnumerable<ArticleResponse>> GetArticlesAsync(CancellationToken ct = default)
@@ -65,5 +67,10 @@
         var articlesResponse = await ArticleService.GetAllAsync();
         TotalCount = articlesResponse.TotalCount;
         return articlesResponse.Articles;
+    }
+
+    void CreateClick()
+    {
+        NavigationManager.NavigateTo($"article/create");
     }
 }
