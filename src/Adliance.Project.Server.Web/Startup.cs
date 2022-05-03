@@ -28,6 +28,7 @@ public class Startup
         services.AddServices();
         services.AddResponseFactories();
         services.AddAuthenticationAndAuthorization(azureAdOptions);
+        services.AddRouting(options => options.LowercaseUrls = true);
         services.AddControllersWithViews(o =>
         {
             // force authorized users by default as a security measure, because then at least a user needs to be authenticated to access anything, even if the programmer misses an [Authorize] attribute
