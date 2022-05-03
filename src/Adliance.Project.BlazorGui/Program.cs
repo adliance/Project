@@ -40,4 +40,7 @@ if (builder.HostEnvironment.IsDevelopment())
 
 builder.Services.AddServices();
 
+//Register DevExpress
+builder.Services.AddDevExpressBlazor();
+
 await builder.Build().RunAsync();
