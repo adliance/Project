@@ -1,4 +1,4 @@
-using Adliance.Project.Server.Web.Exceptions;
+﻿using Adliance.Project.Server.Web.Exceptions;
 using Adliance.Project.Server.Web.ResponseFactories;
 using Adliance.Project.Shared.Requests;
 using Adliance.Project.Shared.Responses;
@@ -104,7 +104,7 @@ public class ArticleController : Controller
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Authorize(Roles = Roles.ArticlesManager), HttpDelete("/api/article/{id}")]
-    public async Task<IActionResult> Update([FromServices] ArticleResponseFactory factory, [FromRoute] Guid id)
+    public async Task<IActionResult> Delete([FromServices] ArticleResponseFactory factory, [FromRoute] Guid id)
     {
         try
         {
