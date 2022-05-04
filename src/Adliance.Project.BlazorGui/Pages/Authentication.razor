@@ -1,20 +1,29 @@
 ﻿@page "/authentication/{action}"
+@using Adliance.Project.BlazorGui.Authentication
 
+@inject NavigationManager NavigationManager
 @inject IHttpClientFactory ClientFactory
+@inject HostAuthenticationStateProvider AuthenticationStateProvider
 
-@code{
+@code {
     [Parameter] public string? Action { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        if (!new[] {"login", "logout" }.Contains(Action?.ToLowerInvariant()))
+        if (!new[] { "login", "logout" }.Contains(Action?.ToLowerInvariant()))
         {
             Action = "login";
         }
 
-        var client = ClientFactory.CreateClient("authorizedClient");
-
-        var response = await client.GetAsync(Action == "login" ? "" : "logout");
-
+        switch (Action)
+        {
+            case "logout":
+                AuthenticationStateProvider.SignOut();
+                break;
+            case "login":
+            default:
+                AuthenticationStateProvider.SignIn("");
+                break;
+        }
     }
 }

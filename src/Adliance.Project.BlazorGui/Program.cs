@@ -38,6 +38,7 @@ if (builder.HostEnvironment.IsDevelopment())
     builder.Services.AddScoped<CookieAuthenticationMessageHandler>();
 }
 
+//Add custom API / business services.
 builder.Services.AddServices();
 
 //Register DevExpress

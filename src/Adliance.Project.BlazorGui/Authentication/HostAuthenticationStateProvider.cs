@@ -16,6 +16,7 @@ public class HostAuthenticationStateProvider : AuthenticationStateProvider
 
     private readonly NavigationManager _navigationManager;
     private readonly IHttpClientFactory _clientFactory;
+    private readonly HttpClient _client;
     private readonly ILogger<HostAuthenticationStateProvider> _logger;
 
     private DateTimeOffset _userLastCheck = DateTimeOffset.FromUnixTimeSeconds(0);
@@ -25,20 +26,34 @@ public class HostAuthenticationStateProvider : AuthenticationStateProvider
     {
         _navigationManager = navigation;
         _clientFactory = clientFactory;
+        _client = _clientFactory.CreateClient("authorizedClient");
         _logger = logger;
     }
+
+    protected Uri? ServerUrl => _client.BaseAddress;
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         return new AuthenticationState(await GetUserAsync(useCache: true).ConfigureAwait(false));
     }
 
+    /// <summary>
+    /// Login to be called by Razor Component Authentication.razor
+    /// </summary>
     public void SignIn(string? customReturnUrl = null)
     {
         var returnUrl = customReturnUrl != null ? _navigationManager.ToAbsoluteUri(customReturnUrl).ToString() : null;
         var encodedReturnUrl = Uri.EscapeDataString(returnUrl ?? _navigationManager.Uri);
-        var logInUrl = _navigationManager.ToAbsoluteUri($"{LogInPath}?returnUrl={encodedReturnUrl}");
+        var logInUrl = _navigationManager.ToAbsoluteUri($"{ServerUrl}{LogInPath}?returnUrl={encodedReturnUrl}");
         _navigationManager.NavigateTo(logInUrl.ToString(), true);
+    }
+
+    /// <summary>
+    /// Logout to be called by Razor Component Authentication.razor
+    /// </summary>
+    public void SignOut()
+    {
+        _navigationManager.NavigateTo($"{ServerUrl}{LogOutPath}", true);
     }
 
     private async ValueTask<ClaimsPrincipal> GetUserAsync(bool useCache = false)
@@ -63,7 +78,6 @@ public class HostAuthenticationStateProvider : AuthenticationStateProvider
 
         try
         {
-            var _client = _clientFactory.CreateClient("authorizedClient");
             _logger.LogInformation(_client.BaseAddress?.ToString());
             user = await _client.GetFromJsonAsync<UserInfo>("api/user").ConfigureAwait(false);
         }
