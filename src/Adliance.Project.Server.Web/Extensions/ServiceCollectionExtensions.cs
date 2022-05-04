@@ -31,11 +31,11 @@ public static class ServiceCollectionExtensions
 
     public static void AddOptions(this IServiceCollection services, IConfiguration configuration, out DatabaseOptions dbOptions, out AzureAdOptions azureAdOptions, out BackgroundJobsOptions backgroundJobsOptions)
     {
-        azureAdOptions = configuration.GetSection("AzureAd").Get<AzureAdOptions>();
-        dbOptions = configuration.GetSection("Database").Get<DatabaseOptions>();
+        azureAdOptions = configuration.GetSection(AzureAdOptions.AzureAd).Get<AzureAdOptions>();
+        dbOptions = configuration.GetSection(DatabaseOptions.Database).Get<DatabaseOptions>();
 
-        backgroundJobsOptions = configuration.GetSection("BackgroundJobs").Get<BackgroundJobsOptions>();
-        services.Configure<BackgroundJobsOptions>(configuration.GetSection("BackgroundJobs"));
+        backgroundJobsOptions = configuration.GetSection(BackgroundJobsOptions.BackgroundJobs).Get<BackgroundJobsOptions>();
+        services.Configure<BackgroundJobsOptions>(configuration.GetSection(BackgroundJobsOptions.BackgroundJobs));
     }
 
     public static void AddAuthenticationAndAuthorization(this IServiceCollection services, AzureAdOptions azureAdOptions)
