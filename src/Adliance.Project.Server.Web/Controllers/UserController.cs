@@ -8,6 +8,11 @@ namespace Adliance.Project.Server.Web.Controllers;
 [ApiController, Route("api/[controller]")]
 public class UserController : ControllerBase
 {
+    /// <summary>
+    /// Gets infos about the authenticated user or anonymous infos.
+    /// </summary>
+    /// <returns>The info about the authenticated or anonymous user.</returns>
+    /// <response code="200">The user info is successfully returned.</response>
     [Authorize, AllowAnonymous]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
