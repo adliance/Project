@@ -64,12 +64,9 @@ public static class ServiceCollectionExtensions
                     if (context.Request.Path.StartsWithSegments("/api", StringComparison.OrdinalIgnoreCase))
                     {
                         // API calls should return error 401, no redirect to Azure AD login. But we still want it to work from Swagger without API key if the user is already logged in.
-                        if (context.Request.Headers.ContainsKey("Referer") && context.Request.Headers["Referer"].ToString().ToLower().Contains("/swagger"))
-                        {
-                            return CookieAuthenticationDefaults.AuthenticationScheme;
-                        }
-
-                        return ApiKeyAuthenticationOptions.AuthenticationScheme;
+                        return context.Request.Cookies.ContainsKey(Names.AuthenticationCookieName)
+                            ? CookieAuthenticationDefaults.AuthenticationScheme
+                            : ApiKeyAuthenticationOptions.AuthenticationScheme;
                     }
 
                     return CookieAuthenticationDefaults.AuthenticationScheme;
@@ -136,7 +133,7 @@ public static class ServiceCollectionExtensions
             .AddCookie(options =>
                 {
                     options.Cookie.SameSite = SameSiteMode.None;
-                    options.Cookie.Name = "auth";
+                    options.Cookie.Name = Names.AuthenticationCookieName;
                     options.LoginPath = "/";
                     options.ExpireTimeSpan = TimeSpan.FromHours(6);
                     options.AccessDeniedPath = "/error/403";
