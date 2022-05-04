@@ -15,22 +15,21 @@ public class HostAuthenticationStateProvider : AuthenticationStateProvider
     private const string LogOutPath = "logout";
 
     private readonly NavigationManager _navigationManager;
-    private readonly IHttpClientFactory _clientFactory;
     private readonly HttpClient _client;
     private readonly ILogger<HostAuthenticationStateProvider> _logger;
 
     private DateTimeOffset _userLastCheck = DateTimeOffset.FromUnixTimeSeconds(0);
-    private ClaimsPrincipal _cachedUser = new ClaimsPrincipal(new ClaimsIdentity());
+    private ClaimsPrincipal _cachedUser = new(new ClaimsIdentity());
 
-    public HostAuthenticationStateProvider(NavigationManager navigation, IHttpClientFactory clientFactory, ILogger<HostAuthenticationStateProvider> logger)
+    public HostAuthenticationStateProvider(NavigationManager navigation, IHttpClientFactory clientFactory,
+        ILogger<HostAuthenticationStateProvider> logger)
     {
         _navigationManager = navigation;
-        _clientFactory = clientFactory;
-        _client = _clientFactory.CreateClient("authorizedClient");
+        _client = clientFactory.CreateClient("authorizedClient");
         _logger = logger;
     }
 
-    protected Uri? ServerUrl => _client.BaseAddress;
+    private Uri? ServerUrl => _client.BaseAddress;
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
@@ -42,20 +41,29 @@ public class HostAuthenticationStateProvider : AuthenticationStateProvider
     /// </summary>
     public void SignIn(string? customReturnUrl = null)
     {
-        var returnUrl = customReturnUrl != null ? _navigationManager.ToAbsoluteUri(customReturnUrl).ToString() : null;
-        var encodedReturnUrl = Uri.EscapeDataString(returnUrl ?? _navigationManager.Uri);
-        var logInUrl = _navigationManager.ToAbsoluteUri($"{ServerUrl}{LogInPath}?returnUrl={encodedReturnUrl}");
-        _navigationManager.NavigateTo(logInUrl.ToString(), true);
+        NavigateTo($"{ServerUrl}{LogInPath}", BuildEncodedReturnUrl(customReturnUrl));
     }
 
     /// <summary>
     /// Logout to be called by Razor Component Authentication.razor
     /// </summary>
-    public void SignOut()
+    public void SignOut(string? customReturnUrl = null)
     {
-        _navigationManager.NavigateTo($"{ServerUrl}{LogOutPath}", true);
+        NavigateTo($"{ServerUrl}{LogOutPath}", BuildEncodedReturnUrl(customReturnUrl));
+    }
+    
+    private void NavigateTo(string url, string returnUrl)
+    {
+        var navigateUrl = _navigationManager.ToAbsoluteUri($"{url}?returnUrl={returnUrl}");
+        _navigationManager.NavigateTo(navigateUrl.ToString(), true);
     }
 
+    private string BuildEncodedReturnUrl(string? customReturnUrl = null)
+    {
+        var returnUrl = customReturnUrl != null ? _navigationManager.ToAbsoluteUri(customReturnUrl).ToString() : null;
+        return Uri.EscapeDataString(returnUrl ?? _navigationManager.Uri);
+    }
+    
     private async ValueTask<ClaimsPrincipal> GetUserAsync(bool useCache = false)
     {
         var now = DateTimeOffset.Now;
@@ -96,12 +104,9 @@ public class HostAuthenticationStateProvider : AuthenticationStateProvider
             user.NameClaimType,
             user.RoleClaimType);
 
-        if (user.Claims != null)
+        foreach (var claim in user.Claims)
         {
-            foreach (var claim in user.Claims)
-            {
-                identity.AddClaim(new Claim(claim.Type, claim.Value));
-            }
+            identity.AddClaim(new Claim(claim.Type, claim.Value));
         }
 
         return new ClaimsPrincipal(identity);

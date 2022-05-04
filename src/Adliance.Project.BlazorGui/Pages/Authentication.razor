@@ -1,8 +1,6 @@
 ﻿@page "/authentication/{action}"
 @using Adliance.Project.BlazorGui.Authentication
 
-@inject NavigationManager NavigationManager
-@inject IHttpClientFactory ClientFactory
 @inject HostAuthenticationStateProvider AuthenticationStateProvider
 
 @code {
@@ -18,7 +16,7 @@
         switch (Action)
         {
             case "logout":
-                AuthenticationStateProvider.SignOut();
+                AuthenticationStateProvider.SignOut("");
                 break;
             case "login":
             default:
