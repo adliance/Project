@@ -24,7 +24,7 @@
                 PagerPageSizeSelectorVisible="@true"
                 PageCount="@TotalCount"
                 PagerAllDataRowsItemVisible="@true"
-                PagerAllowedPageSizes=@(new int[] {5,10,20})>
+                PagerAllowedPageSizes=@(new[] {5,10,20})>
         <Columns>
             <DxDataGridColumn Field="@nameof(ArticleResponse.Name)" Caption="Name" FixedStyle="@DataGridFixedStyle.Left">
                 <DisplayTemplate>

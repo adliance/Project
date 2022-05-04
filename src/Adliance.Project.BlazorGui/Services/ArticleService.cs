@@ -12,7 +12,7 @@ public class ArticleService
         _apiClient = apiClient;
     }
 
-    public const string Path = "article";
+    private const string Path = "article";
 
     /// <summary>
     /// Fetches the articles.

@@ -28,8 +28,8 @@ public static class TestUtils
                 configBuilder.AddInMemoryCollection(
                     new Dictionary<string, string>
                     {
-                        [$"BackgroundJobs:{nameof(BackgroundJobsOptions.EnableApiCallsCleanup)}"] = "false",
-                        [$"Database:{nameof(DatabaseOptions.ConnectionString)}"] = "Data Source=localhost; Initial Catalog=unittests; User ID=sa; Password=P4ss.W0rd; MultipleActiveResultSets=False;"
+                        [$"{nameof(BackgroundJobsOptions.BackgroundJobs)}:{nameof(BackgroundJobsOptions.EnableApiCallsCleanup)}"] = "false",
+                        [$"{nameof(DatabaseOptions.Database)}:{nameof(DatabaseOptions.ConnectionString)}"] = "Data Source=localhost; Initial Catalog=unittests; User ID=sa; Password=P4ss.W0rd; MultipleActiveResultSets=False;"
                     });
                 configBuilder.AddEnvironmentVariables();
             });
