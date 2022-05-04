@@ -35,6 +35,8 @@ else
                 </div>
                 <DxButton Text="Edit" @onclick="@EditClick">
                 </DxButton>
+                <DxButton Text="Delete" @onclick="@DeleteClick">
+                </DxButton>
                 <DxButton Text="Back to Grid" @onclick="@GotoListViewClick">
                 </DxButton>
             </div>
@@ -62,12 +64,12 @@ else
                                 </div>
                             </Template>
                         </DxFormLayoutItem>
-   
+
                         <DxFormLayoutItem ColSpanMd="12">
                             <Template>
                                 <DxSpinEdit @bind-Value="@Data.LengthCm"
-                                   NullText="Length cm"
-                                   ClearButtonDisplayMode="@DataEditorClearButtonDisplayMode.Auto" />
+                                    NullText="Length cm"
+                                    ClearButtonDisplayMode="@DataEditorClearButtonDisplayMode.Auto" />
                                 <div class="text-danger">
                                     <ValidationMessage For="@(() => Data.LengthCm)" />
                                 </div>
@@ -96,7 +98,7 @@ else
                             <Template>
                                 <DxButton CssClass="w-100"
                                   RenderStyle="@ButtonRenderStyle.Secondary"
-                                  Click="@CancelClick"
+                                  Click="@CancelEditClick"
                                   Text="Cancel" />
                             </Template>
                         </DxFormLayoutItem>
@@ -105,6 +107,17 @@ else
             </EditForm>
         </div>
     }
+
+    <DxPopup @bind-Visible="@DeletePopupVisible"
+         HeaderText="Delete?"
+         ShowFooter="@true"
+         BodyText="Are you sure you want to delete the article?"
+         Closed="@DeletePopupClosed">
+        <FooterContentTemplate Context="Context">
+            <DxButton CssClass="popup-button" RenderStyle="@ButtonRenderStyle.Primary" Text="OK" Click="@DeleteOkClick" />
+            <DxButton CssClass="popup-button" RenderStyle="@ButtonRenderStyle.Secondary" Text="Cancel" Click="@Context.CloseCallback" />
+        </FooterContentTemplate>
+    </DxPopup>
 }
 
 @code {
@@ -114,6 +127,7 @@ else
     public bool IsEditMode { get; set; }
     public ArticleResponse? Model { get; set; }
     public ArticleUpdateRequest Data { get; set; } = new ArticleUpdateRequest();
+    public bool DeletePopupVisible { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -126,7 +140,7 @@ else
         NavigationManager.NavigateTo("articles");
     }
 
-    void CancelClick()
+    void CancelEditClick()
     {
         IsEditMode = false;
     }
@@ -144,6 +158,23 @@ else
                 LengthCm = Model.LengthCm
             };
         IsEditMode = true;
+    }
+
+    void DeletePopupClosed(PopupClosedEventArgs args)
+    {
+        DeletePopupVisible = false;
+    }
+
+    void DeleteClick()
+    {
+        DeletePopupVisible = true;
+    }
+
+    async Task DeleteOkClick()
+    {
+        await ArticleService.DeleteAsync(Id);
+        DeletePopupVisible = false;
+        GotoListViewClick();
     }
 
     string? GetUpdatedDate(ArticleResponse article)

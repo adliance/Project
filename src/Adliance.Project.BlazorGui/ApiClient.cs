@@ -153,7 +153,7 @@ public class ApiClient : IApiClient
 
     public async Task DeleteAsync(string path, Guid id)
     {
-        var response = await _client.DeleteAsync($"{path}/{id}");
+        var response = await _client.DeleteAsync($"{RootPath}/{path}/{id}");
         await HandleHttpResponseStatusAsync(response);
     }
 }
