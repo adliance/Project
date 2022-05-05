@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Text.Encodings.Web;
 using Adliance.Project.Server.Core.Interfaces;
 using Adliance.Project.Server.Core.Models;
+using Adliance.Project.Shared;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;

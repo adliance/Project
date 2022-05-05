@@ -8,6 +8,7 @@ using Adliance.Project.Server.Web.ResponseFactories;
 using Adliance.Project.Server.Web.Services;
 using Adliance.Project.Server.Web.Services.Authentication;
 using Adliance.Project.Server.Web.Services.BackgroundJobs;
+using Adliance.Project.Shared;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;

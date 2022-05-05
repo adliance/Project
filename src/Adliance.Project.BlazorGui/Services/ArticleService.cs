@@ -17,7 +17,6 @@ public class ArticleService
     /// <summary>
     /// Fetches the articles.
     /// </summary>
-    /// <param name="factory"></param>
     /// <param name="search">(Optional) If specified, returns only articles that contain this text in its name.</param>
     /// <param name="page">The page.</param>
     /// <param name="itemsPerPage">How many articles per page.</param>
@@ -29,7 +28,6 @@ public class ArticleService
     /// <summary>
     /// Fetches a single article.
     /// </summary>
-    /// <param name="factory"></param>
     /// <param name="id">The ID of the article.</param>
     /// <returns>The specified article.</returns>
     public async Task<ArticleResponse> GetAsync(Guid id) =>
@@ -38,7 +36,6 @@ public class ArticleService
     /// <summary>
     /// Creates a new article.
     /// </summary>
-    /// <param name="factory"></param>
     /// <param name="request">The article to create.</param>
     /// <returns>The newly created article.</returns>
     public async Task<ArticleResponse> CreateAsync(ArticleCreateRequest request) =>
@@ -47,7 +44,6 @@ public class ArticleService
     /// <summary>
     /// Updates an existing article.
     /// </summary>
-    /// <param name="factory"></param>
     /// <param name="id">The ID of the article to update.</param>
     /// <param name="request">The updated article.</param>
     /// <returns>The updated article.</returns>
@@ -57,7 +53,6 @@ public class ArticleService
     /// <summary>
     /// Deletes an existing article.
     /// </summary>
-    /// <param name="factory"></param>
     /// <param name="id">The ID of the article to delete.</param>
     /// <returns></returns>
     public async Task DeleteAsync(Guid id) =>

@@ -1,4 +1,5 @@
 ﻿using Adliance.Project.Server.Core.Interfaces;
+using Adliance.Project.Shared;
 using Hangfire.Dashboard;
 
 namespace Adliance.Project.Server.Web.Services.Authentication;
