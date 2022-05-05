@@ -1,0 +1,18 @@
+﻿<div class="d-flex align-items-center @(JustifyCenter ? "justify-content-center":"")" @attributes="@InputAttributes">
+    <span>@(Text != null ? Text : "Loading data")</span>
+    <div role="status" aria-hidden="true" class="ml-2 spinner-border"></div>
+</div>
+
+@code {
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> InputAttributes { get; set; } = new();
+
+    /// <summary>
+    /// The image source as base64 string.
+    /// </summary>
+    [Parameter]
+    public string? Text { get; set; }
+
+    [Parameter]
+    public bool JustifyCenter { get; set; }
+}

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Adliance.Project.Server.Web.Controllers;
 
+[ApiExplorerSettings(IgnoreApi = true)]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
@@ -35,9 +36,9 @@ public class HomeController : Controller
     }
 
     [AllowAnonymous, HttpGet("/logout")]
-    public async Task<IActionResult> Logout()
+    public async Task<IActionResult> Logout([FromQuery] string? returnUrl)
     {
         await HttpContext.SignOutAsync();
-        return RedirectToAction(nameof(Index));
+        return View(nameof(Logout), returnUrl);
     }
 }

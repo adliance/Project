@@ -1,4 +1,4 @@
-namespace Adliance.Project.Server.Web;
+﻿namespace Adliance.Project.Shared;
 
 public static class Roles
 {

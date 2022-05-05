@@ -16,6 +16,7 @@ Feel free to browse or fork the code. We're happy for any feedback or ways that 
     - **Entity Framework Core 6** for database access. We usually use SQL Server (Azure SQL) for an RDBMS, but it should
       be trivial to replace it with NPGSQL (Postgres).
     - **Blazor Webassembly** for the SPA frontend.
+    - **[DevExpress](https://www.devexpress.com/)** for Blazor UI. 
     - **[Hangfire](https://www.hangfire.io)** for robust background jobs (cron) solution that also includes a nice
       dashboard. In our experience, *Hangfire* is a great replacement of the basic .NET hosted services functionality.
     - **[NodaTime](https://nodatime.org)** for everything timezone-related. But we use the default .NET `DateTime` type
@@ -34,6 +35,7 @@ Feel free to browse or fork the code. We're happy for any feedback or ways that 
 We try to stick as closely as possible to the code style that is suggested by Microsoft and is "included" out-of-the-box
 in Visual Studio or Jetbrains Rider - so no surprises here. In addition, we made the following choices:
 
+- An `.editorconfig` file is on root level of the project to enforce styles throughout IDEs.
 - Nullable is enabled in every project, and compiler warnings are treated as errors. This forces every developer to
   fully embrace nullability checks.
 - We use file-scoped namespaces, as they make the C# files more readable.
@@ -108,6 +110,9 @@ The solution contains the following projects
   This also hides if an actual user (cookie authentication) or an API key (HTTP header authentication) is requesting
   something, the handling of different roles will be the same in the code and access to the currently authenticated
   user (or API key) is hidden via `ICurrentUser`.
+- Cookie based authentication is built with the Blazor authentication state, following resources where used for inspiration:
+    - https://github.com/damienbod/AspNetCore6Experiments
+    - https://github.com/berhir/BlazorWebAssemblyCookieAuth
 
 ## Miscellaneous
 
@@ -132,3 +137,8 @@ The solution contains the following projects
   a full database server (SQL Server) to run, as some functionality (Temporal Tables) are specific to SQL Server and not
   available in an in-memory database or *SQLite*.
 
+## Blazor UI
+
+- As mentioned, DevExpress is used in the Frontend as UI library. To make the frontend project work, 
+  obtain a [free trial license](https://www.devexpress.com/Products/Try/) and configure the `nuget.config` on root level
+  with the [Nuget Feed URL](https://docs.devexpress.com/GeneralInformation/116042/installation/install-devexpress-controls-using-nuget-packages/obtain-your-nuget-feed-credentials).

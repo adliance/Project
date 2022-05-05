@@ -1,0 +1,27 @@
+﻿@page "/authentication/{action}"
+@using Adliance.Project.BlazorGui.Authentication
+
+@inject HostAuthenticationStateProvider AuthenticationStateProvider
+
+@code {
+    [Parameter] public string? Action { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (!new[] { "login", "logout" }.Contains(Action?.ToLowerInvariant()))
+        {
+            Action = "login";
+        }
+
+        switch (Action)
+        {
+            case "logout":
+                AuthenticationStateProvider.SignOut("");
+                break;
+            case "login":
+            default:
+                AuthenticationStateProvider.SignIn("");
+                break;
+        }
+    }
+}

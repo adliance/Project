@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Security.Claims;
 using Adliance.Project.Server.Core.Interfaces;
 using Adliance.Project.Server.Core.Models;
@@ -8,6 +8,7 @@ using Adliance.Project.Server.Web.ResponseFactories;
 using Adliance.Project.Server.Web.Services;
 using Adliance.Project.Server.Web.Services.Authentication;
 using Adliance.Project.Server.Web.Services.BackgroundJobs;
+using Adliance.Project.Shared;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
@@ -31,11 +32,11 @@ public static class ServiceCollectionExtensions
 
     public static void AddOptions(this IServiceCollection services, IConfiguration configuration, out DatabaseOptions dbOptions, out AzureAdOptions azureAdOptions, out BackgroundJobsOptions backgroundJobsOptions)
     {
-        azureAdOptions = configuration.GetSection("AzureAd").Get<AzureAdOptions>();
-        dbOptions = configuration.GetSection("Database").Get<DatabaseOptions>();
+        azureAdOptions = configuration.GetSection(AzureAdOptions.AzureAd).Get<AzureAdOptions>();
+        dbOptions = configuration.GetSection(DatabaseOptions.Database).Get<DatabaseOptions>();
 
-        backgroundJobsOptions = configuration.GetSection("BackgroundJobs").Get<BackgroundJobsOptions>();
-        services.Configure<BackgroundJobsOptions>(configuration.GetSection("BackgroundJobs"));
+        backgroundJobsOptions = configuration.GetSection(BackgroundJobsOptions.BackgroundJobs).Get<BackgroundJobsOptions>();
+        services.Configure<BackgroundJobsOptions>(configuration.GetSection(BackgroundJobsOptions.BackgroundJobs));
     }
 
     public static void AddAuthenticationAndAuthorization(this IServiceCollection services, AzureAdOptions azureAdOptions)
@@ -64,12 +65,9 @@ public static class ServiceCollectionExtensions
                     if (context.Request.Path.StartsWithSegments("/api", StringComparison.OrdinalIgnoreCase))
                     {
                         // API calls should return error 401, no redirect to Azure AD login. But we still want it to work from Swagger without API key if the user is already logged in.
-                        if (context.Request.Headers.ContainsKey("Referer") && context.Request.Headers["Referer"].ToString().ToLower().Contains("/swagger"))
-                        {
-                            return CookieAuthenticationDefaults.AuthenticationScheme;
-                        }
-
-                        return ApiKeyAuthenticationOptions.AuthenticationScheme;
+                        return context.Request.Cookies.ContainsKey(Names.AuthenticationCookieName)
+                            ? CookieAuthenticationDefaults.AuthenticationScheme
+                            : ApiKeyAuthenticationOptions.AuthenticationScheme;
                     }
 
                     return CookieAuthenticationDefaults.AuthenticationScheme;
@@ -136,7 +134,7 @@ public static class ServiceCollectionExtensions
             .AddCookie(options =>
                 {
                     options.Cookie.SameSite = SameSiteMode.None;
-                    options.Cookie.Name = "auth";
+                    options.Cookie.Name = Names.AuthenticationCookieName;
                     options.LoginPath = "/";
                     options.ExpireTimeSpan = TimeSpan.FromHours(6);
                     options.AccessDeniedPath = "/error/403";

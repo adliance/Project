@@ -1,0 +1,72 @@
+﻿@page "/articles"
+@attribute [Authorize(Roles = Roles.ArticlesManager)]
+
+@using Adliance.Project.Shared.Responses
+
+@inject ArticleService ArticleService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Articles</PageTitle>
+
+<div class="w-100">
+    <div class="mb-4">
+        <DxButton Text="Create article" @onclick="@CreateClick">
+        </DxButton>
+    </div>
+</div>
+
+<div class="w-100">
+    <DxDataGrid DataAsync="@GetArticlesAsync"
+                ShowFilterRow="@true"
+                ShowPager="@true"
+                HorizontalScrollBarMode="@ScrollBarMode.Auto"
+                PagerNavigationMode="@PagerNavigationMode.InputBox"
+                PagerPageSizeSelectorVisible="@true"
+                PageCount="@TotalCount"
+                PagerAllDataRowsItemVisible="@true"
+                PagerAllowedPageSizes=@(new[] {5,10,20})>
+        <Columns>
+            <DxDataGridColumn Field="@nameof(ArticleResponse.Name)" Caption="Name" FixedStyle="@DataGridFixedStyle.Left">
+                <DisplayTemplate>
+                    @{
+                        var article = (context as ArticleResponse);
+                    }
+                    <button class="btn btn-link grid-btn-link" @onclick="() => GotoDetailsViewClick(article)">@(article?.Name)</button>
+                </DisplayTemplate>
+            </DxDataGridColumn>
+            <DxDataGridColumn Field="@nameof(ArticleResponse.Description)">
+            </DxDataGridColumn>
+            <DxDataGridColumn Field="@nameof(ArticleResponse.LengthCm)">
+            </DxDataGridColumn>
+            <DxDataGridDateEditColumn Field="@nameof(ArticleResponse.Updated)">
+            </DxDataGridDateEditColumn>
+            <DxDataGridColumn Field="@nameof(ArticleResponse.UpdatedBy)">
+            </DxDataGridColumn>
+        </Columns>
+        <TotalSummary>
+            <DxDataGridSummaryItem Field="@nameof(ArticleResponse.Id)" SummaryType="@SummaryItemType.Count"
+                                   ShowInColumn="@nameof(ArticleResponse.Name)" />
+        </TotalSummary>
+    </DxDataGrid>
+</div>
+
+@code {
+    public int TotalCount { get; set; }
+
+    void GotoDetailsViewClick(ArticleResponse? article)
+    {
+        NavigationManager.NavigateTo($"article/{article?.Id}");
+    }
+
+    public async Task<IEnumerable<ArticleResponse>> GetArticlesAsync(CancellationToken ct = default)
+    {
+        var articlesResponse = await ArticleService.GetAllAsync();
+        TotalCount = articlesResponse.TotalCount;
+        return articlesResponse.Articles;
+    }
+
+    void CreateClick()
+    {
+        NavigationManager.NavigateTo($"article/create");
+    }
+}

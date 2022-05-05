@@ -19,6 +19,9 @@ public class Startup
         _configuration = configuration;
     }
 
+    protected readonly string CorsAllowAll = "Allow_All";
+    protected readonly string CorsAllowLocal = "Allow_Local";
+
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddApplicationInsightsTelemetry();
@@ -28,6 +31,18 @@ public class Startup
         services.AddServices();
         services.AddResponseFactories();
         services.AddAuthenticationAndAuthorization(azureAdOptions);
+
+        services.AddCors(options =>
+        {
+            options.AddPolicy(CorsAllowAll, builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            options.AddPolicy(CorsAllowLocal, policy =>
+                policy.WithOrigins("https://localhost:6001")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+        });
+
+        services.AddRouting(options => options.LowercaseUrls = true);
         services.AddControllersWithViews(o =>
         {
             // force authorized users by default as a security measure, because then at least a user needs to be authenticated to access anything, even if the programmer misses an [Authorize] attribute
@@ -39,7 +54,7 @@ public class Startup
     }
 
 
-    public void Configure(IApplicationBuilder app)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         app.UseHttps();
         app.UseErrorHandling();
@@ -50,6 +65,7 @@ public class Startup
             options.SupportedCultures = options.SupportedUICultures = new List<CultureInfo> { new("de-DE") };
         });
         app.UseRouting();
+        app.UseCors(env.IsDevelopment() ? CorsAllowLocal : CorsAllowAll);
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseMiddleware<ApiCallsMiddleware>();
