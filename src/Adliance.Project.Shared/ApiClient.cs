@@ -4,8 +4,9 @@ using System.Net.Http.Json;
 using System.Net.Mime;
 using System.Text.Json;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
 
-namespace Adliance.Project.BlazorGui;
+namespace Adliance.Project.Shared;
 
 public interface IApiClient
 {
@@ -77,16 +78,6 @@ public class ApiClient : IApiClient
         var message = $"Reason: {response.ReasonPhrase}, Message: {content}";
         _logger.LogError(message);
         throw new ApplicationException(message);
-    }
-
-    protected static bool TryGetTotalCountFromHeader(HttpResponseMessage response, out int totalCount)
-    {
-        totalCount = default;
-        if (response.Headers.TryGetValues("x-total-count", out var headerValues))
-        {
-            return int.TryParse(headerValues.First(), out totalCount);
-        }
-        return totalCount != default;
     }
 
     /// <summary>

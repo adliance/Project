@@ -1,4 +1,5 @@
-﻿using Adliance.Project.Shared.Requests;
+﻿using Adliance.Project.Shared;
+using Adliance.Project.Shared.Requests;
 using Adliance.Project.Shared.Responses;
 
 namespace Adliance.Project.BlazorGui.Services;

@@ -3,6 +3,7 @@ using System.Net.Mime;
 using Adliance.Project.BlazorGui;
 using Adliance.Project.BlazorGui.Extensions;
 using Adliance.Project.BlazorGui.Authentication;
+using Adliance.Project.Shared;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
