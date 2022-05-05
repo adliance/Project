@@ -27,7 +27,6 @@ var httpClientBuilder = builder.Services.AddHttpClient<IApiClient, ApiClient>("a
     client.BaseAddress = new Uri(string.IsNullOrEmpty(apiBaseUrl) ? builder.HostEnvironment.BaseAddress : apiBaseUrl);
     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
 });
-//.AddHttpMessageHandler<AuthorizedHandler>();
 
 builder.Services.AddTransient(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("default"));
 

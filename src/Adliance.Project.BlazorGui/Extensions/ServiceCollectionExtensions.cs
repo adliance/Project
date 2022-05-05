@@ -21,7 +21,6 @@ public static class ServiceCollectionExtensions
         services.AddAuthorizationCore();
         services.TryAddSingleton<AuthenticationStateProvider, HostAuthenticationStateProvider>();
         services.TryAddSingleton(sp => (HostAuthenticationStateProvider)sp.GetRequiredService<AuthenticationStateProvider>());
-        services.AddTransient<AuthorizedHandler>();
         return services;
     }
 
