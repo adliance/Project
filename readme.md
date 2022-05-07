@@ -16,7 +16,7 @@ Feel free to browse or fork the code. We're happy for any feedback or ways that 
     - **Entity Framework Core 6** for database access. We usually use SQL Server (Azure SQL) for an RDBMS, but it should
       be trivial to replace it with NPGSQL (Postgres).
     - **Blazor Webassembly** for the SPA frontend.
-    - **[DevExpress](https://www.devexpress.com/)** for Blazor UI. 
+    - **[DevExpress](https://www.devexpress.com/)** for Blazor UI.
     - **[Hangfire](https://www.hangfire.io)** for robust background jobs (cron) solution that also includes a nice
       dashboard. In our experience, *Hangfire* is a great replacement of the basic .NET hosted services functionality.
     - **[NodaTime](https://nodatime.org)** for everything timezone-related. But we use the default .NET `DateTime` type
@@ -28,7 +28,7 @@ Feel free to browse or fork the code. We're happy for any feedback or ways that 
 
 ## Features
 
-- REST API supports authentication via Cookies or via API Key. This all
+- REST API supports authentication via Cookies or via API Key.
 
 ## Code Style
 
@@ -110,7 +110,8 @@ The solution contains the following projects
   This also hides if an actual user (cookie authentication) or an API key (HTTP header authentication) is requesting
   something, the handling of different roles will be the same in the code and access to the currently authenticated
   user (or API key) is hidden via `ICurrentUser`.
-- Cookie based authentication is built with the Blazor authentication state, following resources where used for inspiration:
+- Cookie based authentication is built with the Blazor authentication state, these resources where used for
+  inspiration:
     - https://github.com/damienbod/AspNetCore6Experiments
     - https://github.com/berhir/BlazorWebAssemblyCookieAuth
 
@@ -139,6 +140,8 @@ The solution contains the following projects
 
 ## Blazor UI
 
-- As mentioned, DevExpress is used in the Frontend as UI library. To make the frontend project work, 
+- DevExpress is used in the Frontend as UI library. To make the frontend project work,
   obtain a [free trial license](https://www.devexpress.com/Products/Try/) and configure the `nuget.config` on root level
-  with the [Nuget Feed URL](https://docs.devexpress.com/GeneralInformation/116042/installation/install-devexpress-controls-using-nuget-packages/obtain-your-nuget-feed-credentials).
+  with
+  the [Nuget Feed URL](https://docs.devexpress.com/GeneralInformation/116042/installation/install-devexpress-controls-using-nuget-packages/obtain-your-nuget-feed-credentials)
+  .

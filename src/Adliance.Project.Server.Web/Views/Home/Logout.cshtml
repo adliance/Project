@@ -1,9 +1,0 @@
-﻿@model string?
-
-<p>You have been successfully logged out.</p>
-<a href="/?returnUrl=@Model">Click here to sign in (again).</a>
-<br/>
-@if (!string.IsNullOrWhiteSpace(Model))
-{
-    <a href="@Model">Return to where you came from.</a>
-}

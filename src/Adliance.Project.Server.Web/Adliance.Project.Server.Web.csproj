@@ -27,12 +27,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="wwwroot" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Adliance.Project.Server.Infrastructure\Adliance.Project.Server.Infrastructure.csproj" />
       <ProjectReference Include="..\Adliance.Project.Shared\Adliance.Project.Shared.csproj" />
     </ItemGroup>
-
+  
 </Project>

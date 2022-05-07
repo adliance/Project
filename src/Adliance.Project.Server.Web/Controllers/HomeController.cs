@@ -21,10 +21,7 @@ public class HomeController : Controller
         if (User.Identity is not { IsAuthenticated: true })
         {
             return Challenge(
-                new AuthenticationProperties
-                {
-                    RedirectUri = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action(nameof(Index), "Home", null, Request.Scheme) : returnUrl
-                }, OpenIdConnectDefaults.AuthenticationScheme);
+                new AuthenticationProperties { RedirectUri = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action(nameof(Index), "Home", null, Request.Scheme) : returnUrl }, OpenIdConnectDefaults.AuthenticationScheme);
         }
 
         if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
@@ -32,13 +29,13 @@ public class HomeController : Controller
             return Redirect(returnUrl);
         }
 
-        return Content("Logged in.");
+        return Content("Eingeloggt.");
     }
 
     [AllowAnonymous, HttpGet("/logout")]
-    public async Task<IActionResult> Logout([FromQuery] string? returnUrl)
+    public async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync();
-        return View(nameof(Logout), returnUrl);
+        return Content("Ausgeloggt.");
     }
 }
